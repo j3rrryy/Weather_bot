@@ -1,8 +1,6 @@
 # Aiogram weather bot
 
-### Telegram: [@J3rry_Weather_Bot](https://t.me/J3rry_Weather_Bot)
-
-## 📖 Key features
+## :book: Key features
 
 - Uses phone location for accurate forecast
 - Supports changing units of measurement
@@ -10,13 +8,69 @@
 - Uses MySQL
 - Uses English or Russian language to communicate
 
-## 🛠 Getting started
+## :hammer_and_wrench: Getting started
 
-1. Create ```.env``` file with variables as in the ```.env.example```
-2. Import ```db.sql``` to your database
-3. Run ```bot.py``` (main file)
-4. Done!
+- Create `.env` file with variables as in the `.env.example`
+- Import `db.sql` to your database
 
-## 🔥 Future plans
+### Windows
 
-- Create prettier interface
+- Create venv
+
+    ```shell
+    python -m venv venv
+    ```
+
+> **Note** Choose your option
+>
+>- Activate venv using `cmd.exe`
+>
+>    ```shell
+>    venv\Scripts\activate.bat
+>    ```
+>
+>- Activate venv using `PowerShell`
+>
+>    ```shell
+>    venv\Scripts\Activate.ps1
+>    ```
+>
+- Install requirements
+
+    ```shell
+    pip install -r requirements.txt
+    ```
+
+- Run script
+
+    ```shell
+    python bot.py
+    ```
+
+### MacOS/Linux
+
+- Create venv
+
+    ```shell
+    python3 -m venv venv
+    ```
+
+- Activate venv
+
+    ```shell
+    source venv/bin/activate
+    ```
+
+- Install requirements
+
+    ```shell
+    pip install -r requirements.txt
+    ```
+
+- Run script
+
+    ```shell
+    python3 bot.py
+    ```
+
+### :email: DM [@J3rry_Weather_Bot](https://t.me/J3rry_Weather_Bot) in Telegram
