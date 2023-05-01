@@ -11,7 +11,7 @@ from services import DAYS, create_forecast_today,\
 from keyboards import language_kb, location_kb, temp_kb,\
     wind_kb, weather_kb, days_kb, back_kb, plots_kb
 from states import FSMSettings, FSMLanguage
-from databases import get_data, post_lang, update_data, get_language
+from database import get_data, post_lang, update_data, get_language
 from errors import DataError, GetWeatherError
 
 

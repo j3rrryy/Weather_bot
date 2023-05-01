@@ -1,7 +1,7 @@
 from datetime import date, timedelta
 import matplotlib.pyplot as plt
 from external_services import get_weather
-from databases import get_data
+from database import get_data
 from lexicon import KB_LEXICON_RU, KB_LEXICON_EN
 
 
