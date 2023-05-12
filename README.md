@@ -10,6 +10,8 @@
 
 ## :hammer_and_wrench: Getting started
 
+- Create Telegram bot in [@BotFather](https://t.me/BotFather) and receive token
+- Sign up in [Weather API](https://www.weatherapi.com/) and receive token
 - Create `.env` file with variables as in the `.env.example`
 - Import `db.sql` to your database
 
