@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 from environs import Env
 
 
@@ -26,7 +27,7 @@ class Config:
 
 def load_config(path: str | None) -> Config:
     """
-    Creates the bot config class.
+    Create the bot config class.
     """
 
     env: Env = Env()

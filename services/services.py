@@ -1,5 +1,7 @@
 from datetime import date, timedelta
+
 import matplotlib.pyplot as plt
+
 from external_services import get_weather
 from database import get_data
 from lexicon import KB_LEXICON_RU, KB_LEXICON_EN
@@ -31,7 +33,7 @@ DAYS: tuple[str] = tuple(
 
 async def create_forecast_today(user_id: int, lang: str) -> str:
     """
-    Creates weather forecast for today.
+    Create weather forecast for today.
     """
 
     user_info: dict[str, str | float] = get_data(user_id)
@@ -116,7 +118,7 @@ async def create_forecast_today(user_id: int, lang: str) -> str:
 
 async def create_forecast_week(user_id: int, lang: str) -> dict[str, str]:
     """
-    Creates weather forecast for the following days.
+    Create weather forecast for the following days.
     """
 
     user_info: dict[str, str | float] = get_data(user_id)
@@ -198,7 +200,7 @@ async def create_forecast_week(user_id: int, lang: str) -> dict[str, str]:
 
 def create_profile(data: dict[str, str | float], lang: str) -> str:
     """
-    Creates user profile.
+    Create user profile.
     """
 
     if lang == 'RU':
@@ -217,7 +219,7 @@ def create_profile(data: dict[str, str | float], lang: str) -> str:
 
 async def create_plot(user_id: int, lang: str, y_type: str) -> None:
     """
-    Creates different weather plots.
+    Create different weather plots.
     """
 
     user_info: dict[str, str | float] = get_data(user_id)

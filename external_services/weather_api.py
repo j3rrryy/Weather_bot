@@ -1,5 +1,6 @@
 from aiohttp import ClientSession
 from environs import Env
+
 from errors import GetWeatherError
 
 
@@ -9,7 +10,7 @@ env.read_env(None)
 
 async def get_weather(today: bool, **commands: str):
     """
-    Gets weather info for today or for the following days.
+    Get weather info for today or for the following days.
     """
 
     params = '&'.join([f'{k}={v}' for k, v in commands.items()])

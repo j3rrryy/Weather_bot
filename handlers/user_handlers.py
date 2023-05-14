@@ -4,6 +4,7 @@ from aiogram.types import Message, ReplyKeyboardRemove,\
 from aiogram.filters import Command, CommandStart, StateFilter, Text
 from aiogram.fsm.state import default_state
 from aiogram.fsm.context import FSMContext
+
 from lexicon import LEXICON_RU, LEXICON_EN, LEXICON_BOTH,\
     ERROR_LEXICON_RU, ERROR_LEXICON_EN, ERROR_LEXICON_BOTH
 from services import DAYS, create_forecast_today,\
@@ -21,7 +22,7 @@ router: Router = Router()
 @router.message(CommandStart(), StateFilter(default_state))
 async def start_command(message: Message, state: FSMContext):
     """
-    Sends the start message and starts the configuration procedure.
+    Send the start message and starts the configuration procedure.
     """
 
     await message.answer(LEXICON_BOTH['/start'], reply_markup=language_kb())
@@ -31,7 +32,7 @@ async def start_command(message: Message, state: FSMContext):
 @router.message(Command(commands=['help']), StateFilter(default_state))
 async def help_command(message: Message):
     """
-    Sends the help messasge.
+    Send the help messasge.
     """
 
     if get_language(message.from_user.id) == 'RU':
@@ -43,7 +44,7 @@ async def help_command(message: Message):
 @router.message(Command(commands=['settings']), StateFilter(default_state))
 async def settings_command(message: Message, state: FSMContext):
     """
-    Starts the configuration procedure.
+    Start the configuration procedure.
     """
 
     await message.answer(LEXICON_BOTH['/settings'], reply_markup=language_kb())
@@ -53,7 +54,7 @@ async def settings_command(message: Message, state: FSMContext):
 @router.message(Command(commands=['weather']), StateFilter(default_state))
 async def weather_command(message: Message):
     """
-    Sends a message which allows the user to choose the weather forecast mode.
+    Send a message which allows the user to choose the weather forecast mode.
     """
     try:
         if get_language(message.from_user.id) == 'RU':
@@ -69,7 +70,7 @@ async def weather_command(message: Message):
 @router.message(Command(commands=['profile']), StateFilter(default_state))
 async def get_profile(message: Message):
     """
-    Sends the user profile.
+    Send the user profile.
     """
 
     try:
@@ -87,7 +88,7 @@ async def get_profile(message: Message):
 @router.callback_query(StateFilter(FSMLanguage.set_language))
 async def language(callback: CallbackQuery, state: FSMContext):
     """
-    Sets the user language snd sends a message
+    Set the user language snd sends a message
     which allows the user to set his location.
     """
 
@@ -115,7 +116,7 @@ async def language(callback: CallbackQuery, state: FSMContext):
 @router.message(F.location, StateFilter(FSMSettings.set_location))
 async def location(message: Message, state: FSMContext):
     """
-    Sets the user location and sends a message
+    Set the user location and sends a message
     which allows the user to select temperature measurement units.
     """
 
@@ -134,7 +135,7 @@ async def location(message: Message, state: FSMContext):
                        Text(text=['celsius', 'fahrenheit']))
 async def unit_of_temp(callback: CallbackQuery, state: FSMContext):
     """
-    Sets the user temperature measurement units and sends a message
+    Set the user temperature measurement units and sends a message
     which allows the user to select wind speed measurement units.
     """
 
@@ -154,7 +155,7 @@ async def unit_of_temp(callback: CallbackQuery, state: FSMContext):
                        Text(text=['mps', 'kmph']))
 async def unit_of_wind(callback: CallbackQuery, state: FSMContext):
     """
-    Sets the user wind speed measurement units and sends a message
+    Set the user wind speed measurement units and sends a message
     about the completed configuration procedure.
     """
 
@@ -178,7 +179,7 @@ async def unit_of_wind(callback: CallbackQuery, state: FSMContext):
                        Text(text=['forecast_today']))
 async def get_forecast_today(callback: CallbackQuery):
     """
-    Sends weather forecast for today.
+    Send weather forecast for today.
     """
 
     await callback.answer()
@@ -207,7 +208,7 @@ async def get_forecast_today(callback: CallbackQuery):
                        Text(text=['forecast_week', 'back']))
 async def week_forecast_days(callback: CallbackQuery):
     """
-    Sends a message which allows the user to choose the weather forecast
+    Send a message which allows the user to choose the weather forecast
     for a certain day or to choose the weather plots mode.
     """
 
@@ -225,7 +226,7 @@ async def week_forecast_days(callback: CallbackQuery):
                        Text(text=DAYS))
 async def get_forecast_week(callback: CallbackQuery):
     """
-    Sends weather forecast for the following day.
+    Send weather forecast for the following day.
     """
 
     await callback.answer()
@@ -257,7 +258,7 @@ async def get_forecast_week(callback: CallbackQuery):
                        Text(text='plots'))
 async def get_plots(callback: CallbackQuery):
     """
-    Sends the weather plots list.
+    Send the weather plots list.
     """
 
     await callback.answer()
@@ -278,7 +279,7 @@ async def get_plots(callback: CallbackQuery):
                        Text(text=['temp', 'wind', 'precip', 'humid']))
 async def get_plot(callback: CallbackQuery, bot: Bot):
     """
-    Sends a weather plot.
+    Send a weather plot.
     """
 
     await callback.answer()
@@ -311,7 +312,7 @@ async def get_plot(callback: CallbackQuery, bot: Bot):
 @router.message()
 async def unknown(message: Message):
     """
-    Sends a message that it can not understand the user.
+    Send a message that it can not understand the user.
     """
 
     await message.answer(LEXICON_BOTH['unknown'])

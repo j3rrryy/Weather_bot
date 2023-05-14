@@ -9,7 +9,7 @@ config: Config = load_config(None)
 
 def post_lang(data: tuple[int, str]) -> None:
     """
-    Posts info about the user language to the db.
+    Post info about the user language to the db.
     """
 
     try:
@@ -45,7 +45,7 @@ def post_lang(data: tuple[int, str]) -> None:
 
 def get_data(user_id: int) -> dict[str, str | float]:
     """
-    Gets all info about the user from the db.
+    Get all info about the user from the db.
     """
 
     try:
@@ -70,7 +70,7 @@ def get_data(user_id: int) -> dict[str, str | float]:
 
 def update_data(data: tuple[int, dict]) -> None:
     """
-    Updates certain info about the user in the db.
+    Update certain info about the user in the db.
     """
 
     try:
@@ -105,7 +105,7 @@ def update_data(data: tuple[int, dict]) -> None:
 
 def get_language(user_id: int) -> str:
     """
-    Gets info about the user language from the db.
+    Get info about the user language from the db.
     """
 
     try:

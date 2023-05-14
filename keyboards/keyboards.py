@@ -1,13 +1,14 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton,\
     InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+
 from lexicon import KB_LEXICON_RU, KB_LEXICON_EN, KB_LEXICON_BOTH
 from services import DAYS
 
 
 def language_kb() -> InlineKeyboardMarkup:
     """
-    Builds a keyboard which allows the user to select a language.
+    Build a keyboard which allows the user to select a language.
     """
 
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
@@ -20,7 +21,7 @@ def language_kb() -> InlineKeyboardMarkup:
 
 def location_kb(lang: str) -> ReplyKeyboardMarkup:
     """
-    Builds a keyboard which allows the user to set his location.
+    Build a keyboard which allows the user to set his location.
     """
 
     kb_builder: ReplyKeyboardBuilder = ReplyKeyboardBuilder()
@@ -37,7 +38,7 @@ def location_kb(lang: str) -> ReplyKeyboardMarkup:
 
 def temp_kb() -> InlineKeyboardMarkup:
     """
-    Builds a keyboard which allows the user to select temperature measurement units.
+    Build a keyboard which allows the user to select temperature measurement units.
     """
 
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
@@ -50,7 +51,7 @@ def temp_kb() -> InlineKeyboardMarkup:
 
 def wind_kb(lang: str) -> InlineKeyboardMarkup:
     """
-    Builds a keyboard which allows the user to select wind speed measurement units.
+    Build a keyboard which allows the user to select wind speed measurement units.
     """
 
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
@@ -67,7 +68,7 @@ def wind_kb(lang: str) -> InlineKeyboardMarkup:
 
 def weather_kb(lang: str) -> InlineKeyboardMarkup:
     """
-    Builds a keyboard which allows the user to choose the weather forecast mode.
+    Build a keyboard which allows the user to choose the weather forecast mode.
     """
 
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
@@ -86,7 +87,7 @@ def weather_kb(lang: str) -> InlineKeyboardMarkup:
 
 def days_kb(lang: str) -> InlineKeyboardMarkup:
     """
-    Builds a keyboard which allows the user to choose the weather forecast for a certain day
+    Build a keyboard which allows the user to choose the weather forecast for a certain day
     or to choose the weather plots mode.
     """
 
@@ -104,7 +105,7 @@ def days_kb(lang: str) -> InlineKeyboardMarkup:
 
 def plots_kb(lang: str) -> InlineKeyboardMarkup:
     """
-    Builds a keyboard which allows the user to choose the certain weather plot.
+    Build a keyboard which allows the user to choose the certain weather plot.
     """
 
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
@@ -129,7 +130,7 @@ def plots_kb(lang: str) -> InlineKeyboardMarkup:
 
 def back_kb(lang: str) -> InlineKeyboardMarkup:
     """
-    Builds a keyboard which allows the user to go back to the menu.
+    Build a keyboard which allows the user to go back to the menu.
     """
 
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
