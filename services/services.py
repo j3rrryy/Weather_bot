@@ -26,9 +26,12 @@ WIND_DIR_RU: dict[str, str] = {
     'NNW': 'ССЗ'
 }
 
-
-DAYS: tuple[str] = tuple(
-    (date.today() + timedelta(days=i)).strftime('%d') for i in range(0, 3))
+def days_generator():
+    """
+    Get 3 days.
+    """
+    for i in range(3):
+        yield (date.today() + timedelta(days=i)).strftime('%d')
 
 
 async def create_forecast_today(user_id: int, lang: str) -> str:
@@ -239,7 +242,7 @@ async def create_plot(user_id: int, lang: str, y_type: str) -> None:
                                          alerts='no',
                                          lang='en')
 
-    x = DAYS
+    x = tuple(days_generator())
     y = []
 
     if lang == 'RU':

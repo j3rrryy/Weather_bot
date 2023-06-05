@@ -3,7 +3,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton,\
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from lexicon import KB_LEXICON_RU, KB_LEXICON_EN, KB_LEXICON_BOTH
-from services import DAYS
+from services import days_generator
 
 
 def language_kb() -> InlineKeyboardMarkup:
@@ -93,7 +93,7 @@ def days_kb(lang: str) -> InlineKeyboardMarkup:
 
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-    kb_builder.row(*(InlineKeyboardButton(text=s, callback_data=s) for s in DAYS), width=4)
+    kb_builder.row(*(InlineKeyboardButton(text=s, callback_data=s) for s in days_generator()), width=4)
 
     if lang == 'RU':
         kb_builder.row(InlineKeyboardButton(text=KB_LEXICON_RU['plots'], callback_data='plots'))

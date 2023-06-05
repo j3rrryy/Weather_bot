@@ -7,7 +7,7 @@ from aiogram.fsm.context import FSMContext
 
 from lexicon import LEXICON_RU, LEXICON_EN, LEXICON_BOTH,\
     ERROR_LEXICON_RU, ERROR_LEXICON_EN, ERROR_LEXICON_BOTH
-from services import DAYS, create_forecast_today,\
+from services import days_generator, create_forecast_today,\
     create_forecast_week, create_profile, create_plot
 from keyboards import language_kb, location_kb, temp_kb,\
     wind_kb, weather_kb, days_kb, back_kb, plots_kb
@@ -223,7 +223,7 @@ async def week_forecast_days(callback: CallbackQuery):
 
 
 @router.callback_query(StateFilter(default_state),
-                       Text(text=DAYS))
+                       Text(text=tuple(days_generator())))
 async def get_forecast_week(callback: CallbackQuery):
     """
     Send weather forecast for the following day.
