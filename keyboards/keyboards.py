@@ -85,7 +85,7 @@ def weather_kb(lang: str) -> InlineKeyboardMarkup:
     return kb_builder.as_markup()
 
 
-def days_kb(lang: str) -> InlineKeyboardMarkup:
+def days_kb(lang: str, user_id: int) -> InlineKeyboardMarkup:
     """
     Build a keyboard which allows the user to choose the weather forecast for a certain day
     or to choose the weather plots mode.
@@ -93,7 +93,7 @@ def days_kb(lang: str) -> InlineKeyboardMarkup:
 
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-    kb_builder.row(*(InlineKeyboardButton(text=s, callback_data=s) for s in days_generator()), width=4)
+    kb_builder.row(*(InlineKeyboardButton(text=s, callback_data=s) for s in days_generator(user_id)), width=4)
 
     if lang == 'RU':
         kb_builder.row(InlineKeyboardButton(text=KB_LEXICON_RU['plots'], callback_data='plots'))

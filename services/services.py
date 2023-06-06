@@ -1,6 +1,8 @@
-from datetime import date, timedelta
+from datetime import timedelta, datetime
 
 import matplotlib.pyplot as plt
+import pytz
+import timezonefinder
 
 from external_services import get_weather
 from database import get_data
@@ -26,12 +28,23 @@ WIND_DIR_RU: dict[str, str] = {
     'NNW': 'ССЗ'
 }
 
-def days_generator():
+def days_generator(user_id: int):
     """
-    Get 3 days.
+    Get 3 days using tz.
     """
-    for i in range(3):
-        yield (date.today() + timedelta(days=i)).strftime('%d')
+    user_info: dict[str, str | float] = get_data(user_id)
+    tf = timezonefinder.TimezoneFinder()
+    dt = datetime.utcnow()
+
+    timezone_str = tf.certain_timezone_at(lat=float(user_info["latitude"]), lng=float(user_info["longitude"]))
+    timezone = pytz.timezone(timezone_str)
+
+    if timezone_str is None:
+        for i in range(3):
+            yield (dt + timedelta(days=i)).strftime('%d')
+    else:
+        for i in range(3):
+            yield (dt + timezone.utcoffset(dt) + timedelta(days=i)).strftime('%d')
 
 
 async def create_forecast_today(user_id: int, lang: str) -> str:
@@ -242,7 +255,7 @@ async def create_plot(user_id: int, lang: str, y_type: str) -> None:
                                          alerts='no',
                                          lang='en')
 
-    x = tuple(days_generator())
+    x = tuple(days_generator(user_id))
     y = []
 
     if lang == 'RU':
