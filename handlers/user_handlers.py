@@ -7,6 +7,7 @@ from aiogram.fsm.context import FSMContext
 
 from lexicon import LEXICON_RU, LEXICON_EN, LEXICON_BOTH,\
     ERROR_LEXICON_RU, ERROR_LEXICON_EN, ERROR_LEXICON_BOTH
+from middlewares import AntiFloodMiddleware
 from services import create_forecast_today,\
     create_forecast_week, create_profile, create_plot
 from keyboards import language_kb, location_kb, temp_kb,\
@@ -17,6 +18,7 @@ from errors import DataError, GetWeatherError
 
 
 router: Router = Router()
+router.message.middleware(AntiFloodMiddleware())
 
 
 @router.message(CommandStart(), StateFilter(default_state))
