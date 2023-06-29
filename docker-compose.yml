@@ -23,6 +23,8 @@ services:
       MYSQL_DATABASE: ${DATABASE}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_HOST: ${DB_HOST}
+      MYSQL_PORT: ${DB_PORT}
     container_name: mysql
 
 
