@@ -1,6 +1,8 @@
-.mypy_cache/
-.vscode/
+.mypy_cache
+.vscode
 .git
-venv/
-__pycache__/
+.venv
+.__pycache__
 Dockerfile
+*.md
+.env.example
