@@ -15,7 +15,7 @@ def post_lang(data: tuple[int, str]) -> None:
     try:
         with connect(database=config.db.database,
                     host=config.db.db_host,
-                    port='3306',
+                    port=config.db.db_port,
                     user=config.db.db_user,
                     password=config.db.db_password) as connection:
 
@@ -52,7 +52,7 @@ def get_data(user_id: int) -> dict[str, str | float]:
     try:
         with connect(database=config.db.database,
                     host=config.db.db_host,
-                    port='3306',
+                    port=config.db.db_port,
                     user=config.db.db_user,
                     password=config.db.db_password) as connection:
 
@@ -78,7 +78,7 @@ def update_data(data: tuple[int, dict]) -> None:
     try:
         with connect(database=config.db.database,
                     host=config.db.db_host,
-                    port='3306',
+                    port=config.db.db_port,
                     user=config.db.db_user,
                     password=config.db.db_password) as connection:
 
@@ -114,7 +114,7 @@ def get_language(user_id: int) -> str:
     try:
         with connect(database=config.db.database,
                     host=config.db.db_host,
-                    port='3306',
+                    port=config.db.db_port,
                     user=config.db.db_user,
                     password=config.db.db_password) as connection:
 

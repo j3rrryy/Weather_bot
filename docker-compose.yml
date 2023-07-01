@@ -8,7 +8,7 @@ services:
     command:
       - redis-server
     ports:
-      - 6379:6379
+      - '6379:6379'
     env_file:
       - .env
     container_name: redis
@@ -18,13 +18,8 @@ services:
     restart: always
     volumes:
     - ./db.sql:/docker-entrypoint-initdb.d/dump.sql
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DATABASE}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_HOST: ${DB_HOST}
-      MYSQL_PORT: ${DB_PORT}
+    env_file:
+      - .env
     container_name: mysql
 
 
@@ -35,7 +30,7 @@ services:
     volumes:
       - ./:/app
     ports:
-      - 8080:8080
+      - '8080:8080'
     env_file:
       - .env
     depends_on:
