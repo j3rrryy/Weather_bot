@@ -1,6 +1,7 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton,\
     InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from lexicon import KB_LEXICON_RU, KB_LEXICON_EN, KB_LEXICON_BOTH
 from services import days_generator
@@ -75,17 +76,21 @@ def weather_kb(lang: str) -> InlineKeyboardMarkup:
 
     if lang == 'RU':
         kb_builder.row(InlineKeyboardButton(text=KB_LEXICON_RU['today'], callback_data='forecast_today'),
-                       InlineKeyboardButton(text=KB_LEXICON_RU['week'], callback_data='forecast_week'),
+                       InlineKeyboardButton(
+                           text=KB_LEXICON_RU['week'], callback_data='forecast_week'),
                        width=1)
     else:
         kb_builder.row(InlineKeyboardButton(text=KB_LEXICON_EN['today'], callback_data='forecast_today'),
-                       InlineKeyboardButton(text=KB_LEXICON_EN['week'], callback_data='forecast_week'),
+                       InlineKeyboardButton(
+                           text=KB_LEXICON_EN['week'], callback_data='forecast_week'),
                        width=1)
 
     return kb_builder.as_markup()
 
 
-def days_kb(lang: str, user_id: int) -> InlineKeyboardMarkup:
+async def days_kb(user_id: int,
+                  lang: str,
+                  sessionmaker: async_sessionmaker[AsyncSession]) -> InlineKeyboardMarkup:
     """
     Build a keyboard which allows the user to choose the weather forecast for a certain day
     or to choose the weather plots mode.
@@ -93,12 +98,17 @@ def days_kb(lang: str, user_id: int) -> InlineKeyboardMarkup:
 
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
-    kb_builder.row(*(InlineKeyboardButton(text=s, callback_data=s) for s in days_generator(user_id)), width=4)
+    days = await days_generator(user_id=user_id, sessionmaker=sessionmaker)
+
+    kb_builder.row(*(InlineKeyboardButton(text=s, callback_data=s)
+                   for s in days), width=4)
 
     if lang == 'RU':
-        kb_builder.row(InlineKeyboardButton(text=KB_LEXICON_RU['plots'], callback_data='plots'))
+        kb_builder.row(InlineKeyboardButton(
+            text=KB_LEXICON_RU['plots'], callback_data='plots'))
     else:
-        kb_builder.row(InlineKeyboardButton(text=KB_LEXICON_EN['plots'], callback_data='plots'))
+        kb_builder.row(InlineKeyboardButton(
+            text=KB_LEXICON_EN['plots'], callback_data='plots'))
 
     return kb_builder.as_markup()
 
@@ -112,18 +122,26 @@ def plots_kb(lang: str) -> InlineKeyboardMarkup:
 
     if lang == 'RU':
         kb_builder.row(InlineKeyboardButton(text=KB_LEXICON_RU['temp'], callback_data='temp'),
-                    InlineKeyboardButton(text=KB_LEXICON_RU['wind'], callback_data='wind'),
-                    InlineKeyboardButton(text=KB_LEXICON_RU['precip'], callback_data='precip'),
-                    InlineKeyboardButton(text=KB_LEXICON_RU['humid'], callback_data='humid'),
-                    InlineKeyboardButton(text=KB_LEXICON_RU['back'], callback_data='back'),
-                    width=1)
+                       InlineKeyboardButton(
+                           text=KB_LEXICON_RU['wind'], callback_data='wind'),
+                       InlineKeyboardButton(
+                           text=KB_LEXICON_RU['precip'], callback_data='precip'),
+                       InlineKeyboardButton(
+                           text=KB_LEXICON_RU['humid'], callback_data='humid'),
+                       InlineKeyboardButton(
+                           text=KB_LEXICON_RU['back'], callback_data='back'),
+                       width=1)
     else:
         kb_builder.row(InlineKeyboardButton(text=KB_LEXICON_EN['temp'], callback_data='temp'),
-                    InlineKeyboardButton(text=KB_LEXICON_EN['wind'], callback_data='wind'),
-                    InlineKeyboardButton(text=KB_LEXICON_EN['precip'], callback_data='precip'),
-                    InlineKeyboardButton(text=KB_LEXICON_EN['humid'], callback_data='humid'),
-                    InlineKeyboardButton(text=KB_LEXICON_EN['back'], callback_data='back'),
-                    width=1)
+                       InlineKeyboardButton(
+                           text=KB_LEXICON_EN['wind'], callback_data='wind'),
+                       InlineKeyboardButton(
+                           text=KB_LEXICON_EN['precip'], callback_data='precip'),
+                       InlineKeyboardButton(
+                           text=KB_LEXICON_EN['humid'], callback_data='humid'),
+                       InlineKeyboardButton(
+                           text=KB_LEXICON_EN['back'], callback_data='back'),
+                       width=1)
 
     return kb_builder.as_markup()
 

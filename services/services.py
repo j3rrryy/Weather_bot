@@ -1,5 +1,6 @@
 from datetime import timedelta, datetime
 
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 import matplotlib.pyplot as plt
 import pytz
 import timezonefinder
@@ -28,31 +29,37 @@ WIND_DIR_RU: dict[str, str] = {
     'NNW': 'ССЗ'
 }
 
-def days_generator(user_id: int):
+
+async def days_generator(user_id: int, sessionmaker: async_sessionmaker[AsyncSession]) -> tuple:
     """
     Get 3 days using tz.
     """
-    user_info: dict[str, str | float] = get_data(user_id)
+
+    user_info: dict[str, str | float] = await get_data(
+        user_id=user_id, sessionmaker=sessionmaker)
+
     tf = timezonefinder.TimezoneFinder()
     dt = datetime.utcnow()
 
-    timezone_str = tf.certain_timezone_at(lat=float(user_info["latitude"]), lng=float(user_info["longitude"]))
-    timezone = pytz.timezone(timezone_str)
+    timezone_str = tf.certain_timezone_at(
+        lat=float(user_info["latitude"]), lng=float(user_info["longitude"]))
 
     if timezone_str is None:
-        for i in range(3):
-            yield (dt + timedelta(days=i)).strftime('%d')
+        return tuple((dt + timedelta(days=i)).strftime('%d') for i in range(3))
     else:
-        for i in range(3):
-            yield (dt + timezone.utcoffset(dt) + timedelta(days=i)).strftime('%d')
+        timezone = pytz.timezone(timezone_str)
+        return tuple((dt + timezone.utcoffset(dt) + timedelta(days=i)).strftime('%d') for i in range(3))
 
 
-async def create_forecast_today(user_id: int, lang: str) -> str:
+async def create_forecast_today(user_id: int,
+                                lang: str,
+                                sessionmaker: async_sessionmaker[AsyncSession]) -> str:
     """
     Create weather forecast for today.
     """
 
-    user_info: dict[str, str | float] = get_data(user_id)
+    user_info: dict[str, str | float] = await get_data(
+        user_id=user_id, sessionmaker=sessionmaker)
 
     if lang == 'RU':
         weather_info = await get_weather(True,
@@ -64,7 +71,6 @@ async def create_forecast_today(user_id: int, lang: str) -> str:
                                          q=f'{float(user_info["latitude"])},{float(user_info["longitude"])}',
                                          aqi='no',
                                          lang='en')
-
 
     condition: str = str(weather_info['current']['condition']['text'])
 
@@ -132,12 +138,13 @@ async def create_forecast_today(user_id: int, lang: str) -> str:
     return res
 
 
-async def create_forecast_week(user_id: int, lang: str) -> dict[str, str]:
+async def create_forecast_week(user_id: int, lang: str, sessionmaker: async_sessionmaker[AsyncSession]) -> dict[str, str]:
     """
     Create weather forecast for the following days.
     """
 
-    user_info: dict[str, str | float] = get_data(user_id)
+    user_info: dict[str, str | float] = await get_data(
+        user_id=user_id, sessionmaker=sessionmaker)
 
     if lang == 'RU':
         weather_info = await get_weather(False,
@@ -214,31 +221,36 @@ async def create_forecast_week(user_id: int, lang: str) -> dict[str, str]:
     return res
 
 
-def create_profile(data: dict[str, str | float], lang: str) -> str:
+async def create_profile(user_id: int, lang: str, sessionmaker: async_sessionmaker[AsyncSession]) -> str:
     """
     Create user profile.
     """
 
+    user_info: dict[str, str | float] = (await get_data(user_id=user_id, sessionmaker=sessionmaker))
+
     if lang == 'RU':
-        return f'Язык: {data["language"]}\
-                \nШирота: {float(data["latitude"])}\
-                \nДолгота: {float(data["longitude"])}\
-                \nЕдиницы измерения температуры: {KB_LEXICON_RU[data["temp_unit"]]}\
-                \nЕдиницы измерения скорости ветра: {KB_LEXICON_RU[data["wind_unit"]]}'
+        return f'Язык: {user_info["language"]}\
+                \nШирота: {float(user_info["latitude"])}\
+                \nДолгота: {float(user_info["longitude"])}\
+                \nЕдиницы измерения температуры: {KB_LEXICON_RU[user_info["temp_unit"]]}\
+                \nЕдиницы измерения скорости ветра: {KB_LEXICON_RU[user_info["wind_unit"]]}'
     else:
-        return f'Language: {data["language"]}\
-                \nLatitude: {float(data["latitude"])}\
-                \nLongitude: {float(data["longitude"])}\
-                \nTemperature measurement units: {KB_LEXICON_EN[data["temp_unit"]]}\
-                \nUnits of wind speed measurement: {KB_LEXICON_EN[data["wind_unit"]]}'
+        return f'Language: {user_info["language"]}\
+                \nLatitude: {float(user_info["latitude"])}\
+                \nLongitude: {float(user_info["longitude"])}\
+                \nTemperature measurement units: {KB_LEXICON_EN[user_info["temp_unit"]]}\
+                \nUnits of wind speed measurement: {KB_LEXICON_EN[user_info["wind_unit"]]}'
 
 
-async def create_plot(user_id: int, lang: str, y_type: str) -> None:
+async def create_plot(user_id: int,
+                      lang: str,
+                      plot_type: str,
+                      sessionmaker: async_sessionmaker[AsyncSession]) -> None:
     """
     Create different weather plots.
     """
 
-    user_info: dict[str, str | float] = get_data(user_id)
+    user_info: dict[str, str | float] = await get_data(user_id=user_id, sessionmaker=sessionmaker)
 
     if lang == 'RU':
         weather_info = await get_weather(False,
@@ -255,7 +267,7 @@ async def create_plot(user_id: int, lang: str, y_type: str) -> None:
                                          alerts='no',
                                          lang='en')
 
-    x = tuple(days_generator(user_id))
+    x = tuple(await days_generator(user_id=user_id, sessionmaker=sessionmaker))
     y = []
 
     if lang == 'RU':
@@ -263,7 +275,7 @@ async def create_plot(user_id: int, lang: str, y_type: str) -> None:
     else:
         plt.xlabel('Days')
 
-    match y_type:
+    match plot_type:
 
         # temperature plot
         case 'temp':

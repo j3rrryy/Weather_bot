@@ -16,18 +16,19 @@
 
 - Create Telegram bot in [@BotFather](https://t.me/BotFather) and receive token
 - Sign up in [Weather API](https://www.weatherapi.com/) and receive token
-- Create `.env` file with variables as in the `.env.example`
+- Create `.env` file with variables as in the `examples/.env.example`
+- Create `alembic.ini` file with variables as in the `examples/alembic.ini.example`
 
 ### :rocket: Start
 
 ```shell
-docker-compose up --build -d
+docker compose up --build -d
 ```
 
 ### :x: Stop
 
 ```shell
-docker-compose down
+docker compose stop
 ```
 
 ### :email: DM [@J3rry_Weather_Bot](https://t.me/J3rry_Weather_Bot) in Telegram

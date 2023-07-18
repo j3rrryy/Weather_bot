@@ -16,7 +16,6 @@ async def get_weather(today: bool, **commands: str):
 
     params = '&'.join([f'{k}={v}' for k, v in commands.items()])
 
-
     if today:
         # get weather forecast for today
         url = f'http://api.weatherapi.com/v1/current.json?key={TOKEN}&{params}'
@@ -30,4 +29,5 @@ async def get_weather(today: bool, **commands: str):
 
     if 'error' in res.keys():
         raise GetWeatherError
+
     return res

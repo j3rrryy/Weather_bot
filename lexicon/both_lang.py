@@ -27,9 +27,9 @@ LEXICON_COMMANDS_BOTH: dict[str, str] = {
 
 ERROR_LEXICON_BOTH: dict[str, str] = {
     'DataError': '<b>An error has occurred!\U0001f622</b>\
-                    \nThere is a problem with the database. You can try to fix it if you are not at the stage of the initial configuration of the bot by going through the setup procedure /settings.\
+                    \nThere is a problem with the database. You can try to fix it if you are not at the stage of configuration of the bot by going through the setup procedure /settings.\
                     \nIf that did not help, then try again later\n\
                     \n<b>Произошла ошибка!</b>\U0001f622\
-                    \nВозникла проблема с базой данных. Если вы не находитесь на начальной стадии настройки бота, то вы можете попробовать пройти процедуру настройки /settings.\
+                    \nВозникла проблема с базой данных. Если вы не находитесь на стадии настройки бота, то вы можете попробовать пройти процедуру настройки /settings.\
                     \nЕсли это не помогло, то повторите попытку позже',
 }

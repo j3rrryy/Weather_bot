@@ -1,132 +1,94 @@
-from mysql.connector import connect
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
-from config_data import Config, load_config
+from database import User
 from errors import DataError
 
 
-config: Config = load_config(None)
-
-
-def post_lang(data: tuple[int, str]) -> None:
+async def post_lang(data: tuple[int, str], sessionmaker: async_sessionmaker[AsyncSession]) -> None:
     """
     Post info about the user language to the db.
     """
 
-    try:
-        with connect(database=config.db.database,
-                    host=config.db.db_host,
-                    port=config.db.db_port,
-                    user=config.db.db_user,
-                    password=config.db.db_password) as connection:
+    async with sessionmaker() as session:
+        async with session.begin():
+            try:
+                user = await session.get(User, data[0])
 
-            data_res = f"{data[0]}, '{data[1]}'"
-
-            post_data = f"""
-                            INSERT INTO users(user_id, language)
-                            VALUES ({data_res});
-                        """
-
-            update_data = f"""
-                            UPDATE users
-                            SET language = {f"'{data[1]}'"}
-                            WHERE user_id = {data[0]}
-                        """
-            with connection.cursor() as cursor:
-                try:
-                    # try to insert language info about the new user
-                    cursor.execute(post_data)
-                    connection.commit()
-                except Exception:
+                if user:
                     # update language info about the existing user
-                    cursor.execute(update_data)
-                    connection.commit()
+                    user.language = data[1]
+                else:
+                    # insert language info about the new user
+                    user = User(user_id=data[0], language=data[1])
+                    session.add(user)
 
-    except Exception:
-        raise DataError
+            except:
+                await session.rollback()
+                raise DataError
 
-def get_data(user_id: int) -> dict[str, str | float]:
+
+async def get_data(user_id: int, sessionmaker: async_sessionmaker[AsyncSession]) -> dict[str, str | float]:
     """
     Get all info about the user from the db.
     """
 
-    try:
-        with connect(database=config.db.database,
-                    host=config.db.db_host,
-                    port=config.db.db_port,
-                    user=config.db.db_user,
-                    password=config.db.db_password) as connection:
+    async with sessionmaker() as session:
+        async with session.begin():
+            try:
+                user = await session.get(User, user_id)
+                if user:
+                    user_info = {
+                        'language': user.language,
+                        'latitude': user.latitude,
+                        'longitude': user.longitude,
+                        'temp_unit': user.temp_unit,
+                        'wind_unit': user.wind_unit
+                    }
+                    return user_info
+                else:
+                    raise DataError
 
-            get_data = f"""
-                            SELECT language, latitude, longitude, temp_unit, wind_unit
-                            FROM users
-                            WHERE user_id = {user_id};
-                        """
-
-            with connection.cursor(dictionary=True) as cursor:
-                cursor.execute(get_data)
-                return cursor.fetchall()[0] # type: ignore
-
-    except Exception:
-        raise DataError
+            except:
+                await session.rollback()
+                raise DataError
 
 
-def update_data(data: tuple[int, dict]) -> None:
+async def update_data(data: tuple[int, dict[str, str | float]], sessionmaker: async_sessionmaker[AsyncSession]) -> None:
     """
     Update certain info about the user in the db.
     """
 
-    try:
-        with connect(database=config.db.database,
-                    host=config.db.db_host,
-                    port=config.db.db_port,
-                    user=config.db.db_user,
-                    password=config.db.db_password) as connection:
-
-            data_elements = []
-
-            for k, v in data[1].items():
-                if isinstance(v, int):
-                    data_elements.append(f'{k} = {v}')
+    async with sessionmaker() as session:
+        async with session.begin():
+            try:
+                user = await session.get(User, data[0])
+                if user:
+                    user.latitude = data[1]['latitude']
+                    user.longitude = data[1]['longitude']
+                    user.temp_unit = data[1]['temp_unit']
+                    user.wind_unit = data[1]['wind_unit']
                 else:
-                    data_elements.append(f"{k} = '{v}'")
+                    raise DataError
 
-            data_process = ',\n'.join(data_elements)
-
-            update_data = f"""
-                            UPDATE users
-                            SET {data_process}
-                            WHERE user_id = {data[0]};
-                        """
-
-            with connection.cursor() as cursor:
-                cursor.execute(update_data)
-                connection.commit()
-
-    except Exception:
-        raise DataError
+            except:
+                await session.rollback()
+                raise DataError
 
 
-def get_language(user_id: int) -> str:
+async def get_language(user_id: int, sessionmaker: async_sessionmaker[AsyncSession]) -> str:
     """
     Get info about the user language from the db.
     """
+    async with sessionmaker() as session:
+        async with session.begin():
+            try:
+                user = await session.get(User, user_id)
 
-    try:
-        with connect(database=config.db.database,
-                    host=config.db.db_host,
-                    port=config.db.db_port,
-                    user=config.db.db_user,
-                    password=config.db.db_password) as connection:
+                if user:
+                    return user.language
+                else:
+                    raise DataError
 
-            get_lang = f"""
-                            SELECT language
-                            FROM users
-                            WHERE user_id = {user_id};
-                        """
-
-            with connection.cursor() as cursor:
-                cursor.execute(get_lang)
-                return cursor.fetchone()[0]
-
-    except Exception:
-        raise DataError
+            except:
+                await session.rollback()
+                raise DataError

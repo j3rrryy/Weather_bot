@@ -1,39 +1,39 @@
 version: '3.9'
 
+volumes:
+  pgdata:
+
+
 services:
-
-  redis:
-    image: redis
-    restart: always
-    command:
-      - redis-server
-    ports:
-      - '6379:6379'
-    env_file:
-      - .env
-    container_name: redis
-
-  mysql:
-    image: mysql
-    restart: always
-    volumes:
-    - ./db.sql:/docker-entrypoint-initdb.d/dump.sql
-    env_file:
-      - .env
-    container_name: mysql
-
-
   bot:
     build: .
     restart: always
-    command: python bot.py
-    volumes:
-      - ./:/app
+    command: bash -c "alembic upgrade head && python bot.py"
     ports:
-      - '8080:8080'
+      - "8080:8080"
     env_file:
       - .env
     depends_on:
-      - mysql
+      - postgres
       - redis
     container_name: weather_bot
+
+  postgres:
+    image: postgres:alpine
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+    container_name: postgres_bot
+
+  redis:
+    image: redis:alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    env_file:
+      - .env
+    command:
+      - redis-server
+    container_name: redis_bot

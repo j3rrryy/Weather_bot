@@ -10,21 +10,26 @@ __all__ = ['Config', 'load_config']
 class TgBot:
     token: str
 
+
 @dataclass
 class DatabaseConfig:
-    database: str
-    db_host: str
-    db_port: str
+    driver: str
     db_user: str
     db_password: str
+    db_host: str
+    db_port: str
+    database: str
+
 
 @dataclass
 class RedisConfig:
     redis_host: str
 
+
 @dataclass
 class WeatherConfig:
     token: str
+
 
 @dataclass
 class Config:
@@ -43,10 +48,11 @@ def load_config(path: str | None) -> Config:
     env.read_env(path)
 
     return Config(tg_bot=TgBot(token=env('BOT_TOKEN')),
-                  db=DatabaseConfig(database=env('MYSQL_DATABASE'),
-                                    db_host=env('MYSQL_HOST'),
-                                    db_port=env('MYSQL_PORT'),
-                                    db_user=env('MYSQL_USER'),
-                                    db_password=env('MYSQL_PASSWORD')),
+                  db=DatabaseConfig(driver=env('DB_DRIVER'),
+                                    db_user=env('POSTGRES_USER'),
+                                    db_password=env('POSTGRES_PASSWORD'),
+                                    db_host=env('POSTGRES_HOST'),
+                                    db_port=env('POSTGRES_PORT'),
+                                    database=env('POSTGRES_DB')),
                   redis=RedisConfig(redis_host=env('REDIS_HOST')),
                   weather=WeatherConfig(token=env('WEATHER_API')))

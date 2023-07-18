@@ -3,8 +3,9 @@ mypy_cache
 .git
 venv
 .github
+.gitignore
 __pycache__
 Dockerfile
 *.md
-.env.example
+examples
 LICENSE
