@@ -2,10 +2,11 @@
 
 ## :book: Key features
 
+- Fully asynchronous
 - Uses phone location for accurate forecast
 - Supports changing units of measurement
 - Supports showing weather plots
-- Uses MySQL
+- Uses PostgreSQL
 - Uses English or Russian language to communicate
 
 ## :computer: Requirements
