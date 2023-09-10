@@ -338,5 +338,5 @@ async def create_plot(user_id: int,
     plt.plot(x, y, color='blue', marker='o',
              markersize=6, markerfacecolor='black')
 
-    plt.savefig(f'./services/{str(user_id)}_plot.png')
+    plt.savefig(f'./services/temp/{str(user_id)}_plot.png')
     plt.close()

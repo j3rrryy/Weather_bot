@@ -1,3 +1,5 @@
+import os
+
 from aiogram import Bot, Router, F
 from aiogram.types import Message, ReplyKeyboardRemove,\
     CallbackQuery, FSInputFile
@@ -341,15 +343,19 @@ async def get_plot(callback: CallbackQuery, bot: Bot, sessionmaker: async_sessio
 
     try:
         user_id = callback.from_user.id
+        file_path = fr'./services/temp/{user_id}_plot.png'
         lang = await get_language(user_id=user_id, sessionmaker=sessionmaker)
-        await create_plot(user_id=user_id, lang=lang, plot_type=callback.data, sessionmaker=sessionmaker)
 
-        if lang == 'RU':
-            await bot.send_photo(chat_id=callback.message.chat.id,
-                                 photo=FSInputFile(fr'./services/{user_id}_plot.png'))
-        else:
-            await bot.send_photo(chat_id=callback.message.chat.id,
-                                 photo=FSInputFile(fr'./services/{user_id}_plot.png'))
+        await create_plot(user_id=user_id,
+                          lang=lang,
+                          plot_type=callback.data,
+                          sessionmaker=sessionmaker)
+
+        await bot.send_photo(chat_id=callback.message.chat.id,
+                             photo=FSInputFile(file_path))
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
 
     except DataError as error:
         print(error)
@@ -357,7 +363,8 @@ async def get_plot(callback: CallbackQuery, bot: Bot, sessionmaker: async_sessio
 
     except GetWeatherError as error:
         print(error)
-        lang = await get_language(user_id=callback.from_user.id, sessionmaker=sessionmaker)
+        lang = await get_language(user_id=callback.from_user.id,
+                                  sessionmaker=sessionmaker)
         if lang == 'RU':
             await callback.message.edit_text(ERROR_LEXICON_RU['GetWeatherError'])
         else:
