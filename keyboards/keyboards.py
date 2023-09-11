@@ -146,7 +146,7 @@ def plots_kb(lang: str) -> InlineKeyboardMarkup:
     return kb_builder.as_markup()
 
 
-def back_kb(lang: str) -> InlineKeyboardMarkup:
+def back_kb(lang: str, to: str) -> InlineKeyboardMarkup:
     """
     Build a keyboard which allows the user to go back to the menu.
     """
@@ -154,10 +154,18 @@ def back_kb(lang: str) -> InlineKeyboardMarkup:
     kb_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 
     if lang == 'RU':
-        kb_builder.row(InlineKeyboardButton(
-            text=KB_LEXICON_RU['back'], callback_data='back'))
+        if to == 'days':
+            kb_builder.row(InlineKeyboardButton(
+                text=KB_LEXICON_RU['back'], callback_data='back_ds'))
+        elif to == 'plots':
+            kb_builder.row(InlineKeyboardButton(
+                text=KB_LEXICON_RU['back'], callback_data='back_pl'))
     else:
-        kb_builder.row(InlineKeyboardButton(
-            text=KB_LEXICON_EN['back'], callback_data='back'))
+        if to == 'days':
+            kb_builder.row(InlineKeyboardButton(
+                text=KB_LEXICON_EN['back'], callback_data='back_ds'))
+        elif to == 'plots':
+            kb_builder.row(InlineKeyboardButton(
+                text=KB_LEXICON_EN['back'], callback_data='back_pl'))
 
     return kb_builder.as_markup()

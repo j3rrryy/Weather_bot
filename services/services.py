@@ -6,8 +6,9 @@ import pytz
 import timezonefinder
 
 from external_services import get_weather
-from database import get_data
-from lexicon import KB_LEXICON_RU, KB_LEXICON_EN
+from database import get_data, get_language
+from lexicon import KB_LEXICON_RU, KB_LEXICON_EN, LEXICON_RU,\
+    LEXICON_EN, ERROR_LEXICON_RU, ERROR_LEXICON_EN
 
 
 WIND_DIR_RU: dict[str, str] = {
@@ -49,6 +50,30 @@ async def days_generator(user_id: int, sessionmaker: async_sessionmaker[AsyncSes
     else:
         timezone = pytz.timezone(timezone_str)
         return tuple((dt + timezone.utcoffset(dt) + timedelta(days=i)).strftime('%d') for i in range(3))
+
+
+async def create_message(user_id: int, sessionmaker: async_sessionmaker[AsyncSession], msg_type: str = '') -> tuple:
+    """
+    Get lang, a message for the user
+    and a possible error message.
+    """
+
+    lang = await get_language(user_id=user_id, sessionmaker=sessionmaker)
+
+    if lang == 'RU':
+        if msg_type:
+            msg = LEXICON_RU[msg_type]
+        else:
+            msg = None
+        error_msg = ERROR_LEXICON_RU['GetWeatherError']
+    else:
+        if msg_type:
+            msg = LEXICON_EN[msg_type]
+        else:
+            msg = None
+        error_msg = ERROR_LEXICON_EN['GetWeatherError']
+
+    return lang, msg, error_msg
 
 
 async def create_forecast_today(user_id: int,
