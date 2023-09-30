@@ -129,7 +129,7 @@ def plots_kb(lang: str) -> InlineKeyboardMarkup:
                        InlineKeyboardButton(
                            text=KB_LEXICON_RU['humid'], callback_data='humid'),
                        InlineKeyboardButton(
-                           text=KB_LEXICON_RU['back'], callback_data='back'),
+                           text=KB_LEXICON_RU['back'], callback_data='back_ds'),
                        width=1)
     else:
         kb_builder.row(InlineKeyboardButton(text=KB_LEXICON_EN['temp'], callback_data='temp'),
@@ -140,7 +140,7 @@ def plots_kb(lang: str) -> InlineKeyboardMarkup:
                        InlineKeyboardButton(
                            text=KB_LEXICON_EN['humid'], callback_data='humid'),
                        InlineKeyboardButton(
-                           text=KB_LEXICON_EN['back'], callback_data='back'),
+                           text=KB_LEXICON_EN['back'], callback_data='back_ds'),
                        width=1)
 
     return kb_builder.as_markup()

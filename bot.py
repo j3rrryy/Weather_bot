@@ -35,7 +35,7 @@ async def main() -> None:
     disp.include_router(user_handlers_router)
 
     await bot.delete_webhook(drop_pending_updates=True)
-    await disp.start_polling(bot, sessionmaker=await get_sessionmaker())
+    await disp.start_polling(bot, sessionmaker=get_sessionmaker())
 
 
 if __name__ == '__main__':
