@@ -22,7 +22,7 @@ async def main() -> None:
 
     logger.info('Starting bot')
 
-    config: Config = load_config(None)
+    config: Config = load_config()
 
     storage: RedisStorage = RedisStorage(
         redis=Redis(host=config.redis.redis_host))

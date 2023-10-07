@@ -8,12 +8,10 @@ from aiogram.fsm.state import default_state
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
+import services
+import keyboards
 from lexicon import LEXICON_BOTH, ERROR_LEXICON_BOTH
 from middlewares import AntiFloodMiddleware
-from services import create_message, create_forecast_today,\
-    create_forecast_week, create_profile, create_plot
-from keyboards import language_kb, location_kb, temp_kb,\
-    wind_kb, weather_kb, days_kb, back_kb, plots_kb
 from states import FSMSettings, FSMLanguage
 from database import post_lang, update_data
 from errors import DataError, GetWeatherError
@@ -29,7 +27,7 @@ async def start_command(message: Message, state: FSMContext):
     Send the start message and starts the configuration procedure.
     """
 
-    await message.answer(LEXICON_BOTH['/start'], reply_markup=language_kb())
+    await message.answer(LEXICON_BOTH['/start'], reply_markup=keyboards.language_kb())
     await state.set_state(FSMLanguage.set_language)
 
 
@@ -40,9 +38,9 @@ async def help_command(message: Message, sessionmaker: async_sessionmaker[AsyncS
     """
 
     try:
-        _, msg, _ = await create_message(user_id=message.from_user.id,
-                                         msg_type='/help',
-                                         sessionmaker=sessionmaker)
+        _, msg, _ = await services.create_message(user_id=message.from_user.id,
+                                                  msg_type='/help',
+                                                  sessionmaker=sessionmaker)
         await message.answer(msg)
     except DataError as error:
         print(error)
@@ -55,7 +53,7 @@ async def settings_command(message: Message, state: FSMContext):
     Start the configuration procedure.
     """
 
-    await message.answer(LEXICON_BOTH['/settings'], reply_markup=language_kb())
+    await message.answer(LEXICON_BOTH['/settings'], reply_markup=keyboards.language_kb())
     await state.set_state(FSMLanguage.set_language)
 
 
@@ -66,10 +64,10 @@ async def weather_command(message: Message, sessionmaker: async_sessionmaker[Asy
     """
 
     try:
-        lang, msg, _ = await create_message(user_id=message.from_user.id,
-                                            msg_type='/weather',
-                                            sessionmaker=sessionmaker)
-        await message.answer(msg, reply_markup=weather_kb(lang))
+        lang, msg, _ = await services.create_message(user_id=message.from_user.id,
+                                                     msg_type='/weather',
+                                                     sessionmaker=sessionmaker)
+        await message.answer(msg, reply_markup=keyboards.weather_kb(lang))
 
     except DataError as error:
         print(error)
@@ -83,10 +81,10 @@ async def get_profile(message: Message, sessionmaker: async_sessionmaker[AsyncSe
     """
 
     try:
-        lang, msg, _ = await create_message(user_id=message.from_user.id,
-                                            msg_type='your_profile',
-                                            sessionmaker=sessionmaker)
-        await message.answer(f'{msg}\n\n{await create_profile(user_id=message.from_user.id, lang=lang, sessionmaker=sessionmaker)}')
+        lang, msg, _ = await services.create_message(user_id=message.from_user.id,
+                                                     msg_type='your_profile',
+                                                     sessionmaker=sessionmaker)
+        await message.answer(f'{msg}\n\n{await services.create_profile(user_id=message.from_user.id, lang=lang, sessionmaker=sessionmaker)}')
 
     except DataError as error:
         print(error)
@@ -118,10 +116,10 @@ async def language(callback: CallbackQuery,
     await state.clear()
 
     try:
-        lang, msg, _ = await create_message(user_id=callback.from_user.id,
-                                            msg_type='lang_success',
-                                            sessionmaker=sessionmaker)
-        await callback.message.answer(msg, reply_markup=location_kb(lang))
+        lang, msg, _ = await services.create_message(user_id=callback.from_user.id,
+                                                     msg_type='lang_success',
+                                                     sessionmaker=sessionmaker)
+        await callback.message.answer(msg, reply_markup=keyboards.location_kb(lang))
 
     except DataError as error:
         print(error)
@@ -143,10 +141,10 @@ async def location(message: Message,
                             longitude=message.location.longitude)
 
     try:
-        _, msg, _ = await create_message(user_id=message.from_user.id,
-                                         msg_type='loc_success',
-                                         sessionmaker=sessionmaker)
-        await message.answer(msg, reply_markup=temp_kb())
+        _, msg, _ = await services.create_message(user_id=message.from_user.id,
+                                                  msg_type='loc_success',
+                                                  sessionmaker=sessionmaker)
+        await message.answer(msg, reply_markup=keyboards.temp_kb())
 
     except DataError as error:
         await state.clear()
@@ -171,10 +169,10 @@ async def unit_of_temp(callback: CallbackQuery,
     await callback.answer()
 
     try:
-        lang, msg, _ = await create_message(user_id=callback.from_user.id,
-                                            msg_type='temp_success',
-                                            sessionmaker=sessionmaker)
-        await callback.message.edit_text(msg, reply_markup=wind_kb(lang))
+        lang, msg, _ = await services.create_message(user_id=callback.from_user.id,
+                                                     msg_type='temp_success',
+                                                     sessionmaker=sessionmaker)
+        await callback.message.edit_text(msg, reply_markup=keyboards.wind_kb(lang))
 
     except DataError as error:
         await state.clear()
@@ -199,9 +197,9 @@ async def unit_of_wind(callback: CallbackQuery,
     await callback.answer()
 
     try:
-        _, msg, _ = await create_message(user_id=callback.from_user.id,
-                                         msg_type='settings_completed',
-                                         sessionmaker=sessionmaker)
+        _, msg, _ = await services.create_message(user_id=callback.from_user.id,
+                                                  msg_type='settings_completed',
+                                                  sessionmaker=sessionmaker)
         await callback.message.answer(msg, reply_markup=ReplyKeyboardRemove(remove_keyboard=True))
 
     except DataError as error:
@@ -231,12 +229,12 @@ async def get_forecast_today(callback: CallbackQuery, sessionmaker: async_sessio
     await callback.answer()
 
     try:
-        lang, msg, error_msg = await create_message(user_id=callback.from_user.id,
-                                                    msg_type='weather_today',
-                                                    sessionmaker=sessionmaker)
-        res: str = await create_forecast_today(user_id=callback.from_user.id,
-                                               lang=lang,
-                                               sessionmaker=sessionmaker)
+        lang, msg, error_msg = await services.create_message(user_id=callback.from_user.id,
+                                                             msg_type='weather_today',
+                                                             sessionmaker=sessionmaker)
+        res: str = await services.create_forecast_today(user_id=callback.from_user.id,
+                                                        lang=lang,
+                                                        sessionmaker=sessionmaker)
         await callback.message.edit_text(f'{msg}{res}')
 
     except DataError as error:
@@ -258,12 +256,12 @@ async def week_forecast_days(callback: CallbackQuery, sessionmaker: async_sessio
 
     await callback.answer()
 
-    lang, msg, _ = await create_message(user_id=callback.from_user.id,
-                                        msg_type='weather_week',
-                                        sessionmaker=sessionmaker)
-    await callback.message.edit_text(msg, reply_markup=await days_kb(user_id=callback.from_user.id,
-                                                                     lang=lang,
-                                                                     sessionmaker=sessionmaker))
+    lang, msg, _ = await services.create_message(user_id=callback.from_user.id,
+                                                 msg_type='weather_week',
+                                                 sessionmaker=sessionmaker)
+    await callback.message.edit_text(msg, reply_markup=await keyboards.days_kb(user_id=callback.from_user.id,
+                                                                               lang=lang,
+                                                                               sessionmaker=sessionmaker))
 
 
 @router.callback_query(StateFilter(default_state),
@@ -276,12 +274,12 @@ async def get_forecast_week(callback: CallbackQuery, sessionmaker: async_session
     await callback.answer()
 
     try:
-        lang, _, error_msg = await create_message(user_id=callback.from_user.id,
-                                                  sessionmaker=sessionmaker)
-        res: dict[str, str] = await create_forecast_week(user_id=callback.from_user.id,
-                                                         lang=lang,
-                                                         sessionmaker=sessionmaker)
-        await callback.message.edit_text(res[callback.data], reply_markup=back_kb(lang, 'days'))
+        lang, _, error_msg = await services.create_message(user_id=callback.from_user.id,
+                                                           sessionmaker=sessionmaker)
+        res: dict[str, str] = await services.create_forecast_week(user_id=callback.from_user.id,
+                                                                  lang=lang,
+                                                                  sessionmaker=sessionmaker)
+        await callback.message.edit_text(res[callback.data], reply_markup=keyboards.back_kb(lang, 'days'))
 
     except DataError as error:
         print(error)
@@ -302,10 +300,10 @@ async def get_plots(callback: CallbackQuery, sessionmaker: async_sessionmaker[As
     await callback.answer()
 
     try:
-        lang, msg, _ = await create_message(user_id=callback.from_user.id,
-                                            msg_type='plots',
-                                            sessionmaker=sessionmaker)
-        await callback.message.answer(msg, reply_markup=plots_kb(lang))
+        lang, msg, _ = await services.create_message(user_id=callback.from_user.id,
+                                                     msg_type='plots',
+                                                     sessionmaker=sessionmaker)
+        await callback.message.answer(msg, reply_markup=keyboards.plots_kb(lang))
 
     except DataError as error:
         print(error)
@@ -324,17 +322,17 @@ async def get_plot(callback: CallbackQuery, bot: Bot, sessionmaker: async_sessio
     try:
         user_id = callback.from_user.id
         file_path = fr'./services/temp/{user_id}_plot.png'
-        lang, _, error_msg = await create_message(user_id=callback.from_user.id,
-                                                  sessionmaker=sessionmaker)
+        lang, _, error_msg = await services.create_message(user_id=callback.from_user.id,
+                                                           sessionmaker=sessionmaker)
 
-        await create_plot(user_id=user_id,
-                          lang=lang,
-                          plot_type=callback.data,
-                          sessionmaker=sessionmaker)
+        await services.create_plot(user_id=user_id,
+                                   lang=lang,
+                                   plot_type=callback.data,
+                                   sessionmaker=sessionmaker)
 
         await bot.send_photo(chat_id=callback.message.chat.id,
                              photo=FSInputFile(file_path),
-                             reply_markup=back_kb(lang, 'plots'))
+                             reply_markup=keyboards.back_kb(lang, 'plots'))
 
         if os.path.exists(file_path):
             os.remove(file_path)
@@ -345,7 +343,7 @@ async def get_plot(callback: CallbackQuery, bot: Bot, sessionmaker: async_sessio
 
     except GetWeatherError as error:
         print(error)
-        await callback.message.answer(error_msg)
+        await callback.message.answer(error_msg, reply_markup=keyboards.back_kb(lang, 'plots'))
 
 
 @router.message()

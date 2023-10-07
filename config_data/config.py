@@ -39,13 +39,13 @@ class Config:
     weather: WeatherConfig
 
 
-def load_config(path: str | None) -> Config:
+def load_config() -> Config:
     """
     Create the bot config class.
     """
 
     env: Env = Env()
-    env.read_env(path)
+    env.read_env()
 
     return Config(tg_bot=TgBot(token=env('BOT_TOKEN')),
                   db=DatabaseConfig(driver=env('DB_DRIVER'),

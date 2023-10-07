@@ -1,5 +1,5 @@
-from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine
 from sqlalchemy.engine import URL
+from sqlalchemy.ext.asyncio import create_async_engine as _create_async_engine
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
 from config_data import Config, load_config
@@ -16,7 +16,7 @@ def create_sessionmaker(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]
 def get_sessionmaker() -> async_sessionmaker[AsyncSession]:
     """Configure the db connection"""
 
-    config: Config = load_config(None)
+    config: Config = load_config()
 
     postgres_url = URL.create(
         drivername=config.db.driver,

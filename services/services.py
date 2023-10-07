@@ -1,14 +1,13 @@
 from datetime import timedelta, datetime
 
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 import matplotlib.pyplot as plt
 import pytz
 import timezonefinder
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
+import lexicon
 from external_services import get_weather
 from database import get_data, get_language
-from lexicon import KB_LEXICON_RU, KB_LEXICON_EN, LEXICON_RU,\
-    LEXICON_EN, ERROR_LEXICON_RU, ERROR_LEXICON_EN
 
 
 WIND_DIR_RU: dict[str, str] = {
@@ -62,16 +61,16 @@ async def create_message(user_id: int, sessionmaker: async_sessionmaker[AsyncSes
 
     if lang == 'RU':
         if msg_type:
-            msg = LEXICON_RU[msg_type]
+            msg = lexicon.LEXICON_RU[msg_type]
         else:
             msg = None
-        error_msg = ERROR_LEXICON_RU['GetWeatherError']
+        error_msg = lexicon.ERROR_LEXICON_RU['GetWeatherError']
     else:
         if msg_type:
-            msg = LEXICON_EN[msg_type]
+            msg = lexicon.LEXICON_EN[msg_type]
         else:
             msg = None
-        error_msg = ERROR_LEXICON_EN['GetWeatherError']
+        error_msg = lexicon.ERROR_LEXICON_EN['GetWeatherError']
 
     return lang, msg, error_msg
 
@@ -257,14 +256,14 @@ async def create_profile(user_id: int, lang: str, sessionmaker: async_sessionmak
         return f'Язык: {user_info["language"]}\
                 \nШирота: {float(user_info["latitude"])}\
                 \nДолгота: {float(user_info["longitude"])}\
-                \nЕдиницы измерения температуры: {KB_LEXICON_RU[user_info["temp_unit"]]}\
-                \nЕдиницы измерения скорости ветра: {KB_LEXICON_RU[user_info["wind_unit"]]}'
+                \nЕдиницы измерения температуры: {lexicon.KB_LEXICON_RU[user_info["temp_unit"]]}\
+                \nЕдиницы измерения скорости ветра: {lexicon.KB_LEXICON_RU[user_info["wind_unit"]]}'
     else:
         return f'Language: {user_info["language"]}\
                 \nLatitude: {float(user_info["latitude"])}\
                 \nLongitude: {float(user_info["longitude"])}\
-                \nTemperature measurement units: {KB_LEXICON_EN[user_info["temp_unit"]]}\
-                \nUnits of wind speed measurement: {KB_LEXICON_EN[user_info["wind_unit"]]}'
+                \nTemperature measurement units: {lexicon.KB_LEXICON_EN[user_info["temp_unit"]]}\
+                \nUnits of wind speed measurement: {lexicon.KB_LEXICON_EN[user_info["wind_unit"]]}'
 
 
 async def create_plot(user_id: int,
@@ -312,11 +311,11 @@ async def create_plot(user_id: int,
 
             if lang == 'RU':
                 plt.ylabel(
-                    f'Температура, {KB_LEXICON_RU[user_info["temp_unit"]]}')
+                    f'Температура, {lexicon.KB_LEXICON_RU[user_info["temp_unit"]]}')
                 plt.title('График температуры')
             else:
                 plt.ylabel(
-                    f'Temperature, {KB_LEXICON_EN[user_info["temp_unit"]]}')
+                    f'Temperature, {lexicon.KB_LEXICON_EN[user_info["temp_unit"]]}')
                 plt.title('Temperature plot')
 
         # wind speed plot
@@ -329,11 +328,11 @@ async def create_plot(user_id: int,
 
             if lang == 'RU':
                 plt.ylabel(
-                    f'Скорость ветра, {KB_LEXICON_RU[user_info["wind_unit"]]}')
+                    f'Скорость ветра, {lexicon.KB_LEXICON_RU[user_info["wind_unit"]]}')
                 plt.title('График скорости ветра')
             else:
                 plt.ylabel(
-                    f'Wind speed, {KB_LEXICON_EN[user_info["wind_unit"]]}')
+                    f'Wind speed, {lexicon.KB_LEXICON_EN[user_info["wind_unit"]]}')
                 plt.title('Wind speed plot')
 
         # precipation plot

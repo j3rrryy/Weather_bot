@@ -4,7 +4,7 @@ from config_data import Config, load_config
 from errors import GetWeatherError
 
 
-config: Config = load_config(None)
+config: Config = load_config()
 
 
 async def get_weather(today: bool, **commands: str):
