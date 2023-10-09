@@ -25,7 +25,8 @@ async def main() -> None:
     config: Config = load_config()
 
     storage: RedisStorage = RedisStorage(
-        redis=Redis(host=config.redis.redis_host))
+        redis=Redis(host=config.redis.redis_host,
+                    port=config.redis.redis_port))
 
     bot: Bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
     disp: Dispatcher = Dispatcher(storage=storage)

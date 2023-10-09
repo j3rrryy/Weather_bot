@@ -24,6 +24,7 @@ class DatabaseConfig:
 @dataclass
 class RedisConfig:
     redis_host: str
+    redis_port: int
 
 
 @dataclass
@@ -54,5 +55,6 @@ def load_config() -> Config:
                                     db_host=env('POSTGRES_HOST'),
                                     db_port=env('POSTGRES_PORT'),
                                     database=env('POSTGRES_DB')),
-                  redis=RedisConfig(redis_host=env('REDIS_HOST')),
+                  redis=RedisConfig(redis_host=env('REDIS_HOST'),
+                                    redis_port=int(env('REDIS_PORT'))),
                   weather=WeatherConfig(token=env('WEATHER_API')))

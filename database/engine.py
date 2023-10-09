@@ -14,7 +14,9 @@ def create_sessionmaker(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]
 
 
 def get_sessionmaker() -> async_sessionmaker[AsyncSession]:
-    """Configure the db connection"""
+    """
+    Configure the db connection
+    """
 
     config: Config = load_config()
 

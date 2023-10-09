@@ -3,7 +3,7 @@ import os
 from aiogram import Bot, Router, F
 from aiogram.types import Message, ReplyKeyboardRemove,\
     CallbackQuery, FSInputFile
-from aiogram.filters import Command, CommandStart, StateFilter, Text
+from aiogram.filters import Command, CommandStart, StateFilter
 from aiogram.fsm.state import default_state
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
@@ -18,7 +18,7 @@ from errors import DataError, GetWeatherError
 
 
 router: Router = Router()
-router.message.middleware.register(AntiFloodMiddleware())
+router.message.middleware(AntiFloodMiddleware())
 
 
 @router.message(CommandStart(), StateFilter(default_state))
@@ -155,7 +155,7 @@ async def location(message: Message,
 
 
 @router.callback_query(StateFilter(FSMSettings.unit_of_temp),
-                       Text(text=['celsius', 'fahrenheit']))
+                       F.data.in_(['celsius', 'fahrenheit']))
 async def unit_of_temp(callback: CallbackQuery,
                        state: FSMContext,
                        sessionmaker: async_sessionmaker[AsyncSession]):
@@ -183,7 +183,7 @@ async def unit_of_temp(callback: CallbackQuery,
 
 
 @router.callback_query(StateFilter(FSMSettings.unit_of_wind),
-                       Text(text=['mps', 'kmph']))
+                       F.data.in_(['mps', 'kmph']))
 async def unit_of_wind(callback: CallbackQuery,
                        state: FSMContext,
                        sessionmaker: async_sessionmaker[AsyncSession]):
@@ -220,7 +220,7 @@ async def unit_of_wind(callback: CallbackQuery,
 
 
 @router.callback_query(StateFilter(default_state),
-                       Text(text=['forecast_today']))
+                       F.data.in_(['forecast_today']))
 async def get_forecast_today(callback: CallbackQuery, sessionmaker: async_sessionmaker[AsyncSession]):
     """
     Send weather forecast for today.
@@ -247,7 +247,7 @@ async def get_forecast_today(callback: CallbackQuery, sessionmaker: async_sessio
 
 
 @router.callback_query(StateFilter(default_state),
-                       Text(text=['forecast_week', 'back_ds']))
+                       F.data.in_(['forecast_week', 'back_ds']))
 async def week_forecast_days(callback: CallbackQuery, sessionmaker: async_sessionmaker[AsyncSession]):
     """
     Send a message which allows the user to choose the weather forecast
@@ -265,7 +265,7 @@ async def week_forecast_days(callback: CallbackQuery, sessionmaker: async_sessio
 
 
 @router.callback_query(StateFilter(default_state),
-                       Text(text=[str(day).zfill(2) for day in range(1, 32)]))
+                       F.data.in_([str(day).zfill(2) for day in range(1, 32)]))
 async def get_forecast_week(callback: CallbackQuery, sessionmaker: async_sessionmaker[AsyncSession]):
     """
     Send weather forecast for the following day.
@@ -291,7 +291,7 @@ async def get_forecast_week(callback: CallbackQuery, sessionmaker: async_session
 
 
 @router.callback_query(StateFilter(default_state),
-                       Text(text=['plots', 'back_pl']))
+                       F.data.in_(['plots', 'back_pl']))
 async def get_plots(callback: CallbackQuery, sessionmaker: async_sessionmaker[AsyncSession]):
     """
     Send the weather plots list.
@@ -311,7 +311,7 @@ async def get_plots(callback: CallbackQuery, sessionmaker: async_sessionmaker[As
 
 
 @router.callback_query(StateFilter(default_state),
-                       Text(text=['temp', 'wind', 'precip', 'humid']))
+                       F.data.in_(['temp', 'wind', 'precip', 'humid']))
 async def get_plot(callback: CallbackQuery, bot: Bot, sessionmaker: async_sessionmaker[AsyncSession]):
     """
     Send a weather plot.
