@@ -4,6 +4,7 @@ from typing import Callable, Awaitable, Any
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject, Message, CallbackQuery
 
+
 class AntiFloodMiddleware(BaseMiddleware):
     """
     Antiflood protection
