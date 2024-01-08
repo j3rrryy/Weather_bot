@@ -79,6 +79,7 @@ async def get_language(user_id: int, sessionmaker: async_sessionmaker[AsyncSessi
     """
     Get info about the user language from the db.
     """
+
     async with sessionmaker() as session:
         async with session.begin():
             try:
