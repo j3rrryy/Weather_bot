@@ -1,5 +1,4 @@
 .env
-alembic.ini
 mypy_cache/
 .vscode/
 venv/

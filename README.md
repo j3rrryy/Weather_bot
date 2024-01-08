@@ -19,7 +19,6 @@
 - Create Telegram bot in [@BotFather](https://t.me/BotFather) and receive token
 - Sign up in [Weather API](https://www.weatherapi.com/) and receive token
 - Create `.env` file with variables as in the `examples/.env.example`
-- Create `alembic.ini` file with variables as in the `examples/alembic.ini.example`
 
 ### :rocket: Start
 
