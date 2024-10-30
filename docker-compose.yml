@@ -1,7 +1,6 @@
-version: '3.9'
-
 volumes:
-  pgdata:
+  postgres_data:
+  redis_data:
 
 
 services:
@@ -24,7 +23,7 @@ services:
     env_file:
       - .env
     volumes:
-      - pgdata:/var/lib/postgresql/data/
+      - postgres_data:/var/lib/postgresql/data/
     container_name: postgres_bot
 
   redis:
@@ -32,6 +31,8 @@ services:
     restart: always
     env_file:
       - .env
+    volumes:
+      - redis_data:/data/
     command:
       - redis-server
     container_name: redis_bot
