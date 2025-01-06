@@ -2,46 +2,43 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher
-from aiogram.fsm.storage.redis import RedisStorage, Redis
+from aiogram.client.default import DefaultBotProperties
+from aiogram.fsm.storage.redis import RedisStorage
+from redis.asyncio.client import Redis
 
-from config_data import Config, load_config
-from database import get_sessionmaker
-from handlers import router as user_handlers_router
-from keyboards import set_main_menu
-
+from src.config import load_config
+from src.database import get_sessionmaker
+from src.handlers import router
+from src.keyboards import set_main_menu
 
 logger = logging.getLogger(__name__)
 
 
-async def main() -> None:
-
+async def main():
     logging.basicConfig(
         level=logging.INFO,
-        format='%(filename)s:%(lineno)d #%(levelname)-8s '
-               '[%(asctime)s] - %(name)s - %(message)s')
+        format="%(asctime)s | %(levelname)s | %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    logger.info("Starting bot")
 
-    logger.info('Starting bot')
-
-    config: Config = load_config()
-
+    config = load_config()
+    properties = DefaultBotProperties(parse_mode="HTML")
     storage: RedisStorage = RedisStorage(
-        redis=Redis(host=config.redis.redis_host,
-                    port=config.redis.redis_port))
+        redis=Redis(host=config.redis.host, port=config.redis.port)
+    )
 
-    bot: Bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
-    disp: Dispatcher = Dispatcher(storage=storage)
+    bot = Bot(token=config.bot.token, default=properties)
+    disp = Dispatcher(storage=storage)
+    disp.include_router(router)
 
     await set_main_menu(bot)
-
-    disp.include_router(user_handlers_router)
-
     await bot.delete_webhook(drop_pending_updates=True)
     await disp.start_polling(bot, sessionmaker=get_sessionmaker())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     try:
         asyncio.run(main())
     except Exception as e:
-        logger.error('Bot stopped!')
-        print(e)
+        logger.exception(e)

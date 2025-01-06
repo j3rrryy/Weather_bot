@@ -1,4 +1,5 @@
 volumes:
+  temp:
   postgres_data:
   redis_data:
 
@@ -7,14 +8,14 @@ services:
   bot:
     build: .
     restart: always
-    command: bash -c "alembic upgrade head && python bot.py"
-    ports:
-      - 8080:8080
     env_file:
       - .env
+    volumes:
+      - temp:/temp
     depends_on:
       - postgres
       - redis
+    command: bash -c "alembic -c "./src/config/alembic.ini" upgrade head && python ./bot.py"
     container_name: weather_bot
 
   postgres:
@@ -33,6 +34,4 @@ services:
       - .env
     volumes:
       - redis_data:/data/
-    command:
-      - redis-server
     container_name: redis_bot
