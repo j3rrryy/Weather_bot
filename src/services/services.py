@@ -94,14 +94,14 @@ async def create_forecast_today(
     if lang == "RU":
         weather_info = await get_weather(
             True,
-            q=f'{float(user_info["latitude"])},{float(user_info["longitude"])}',
+            q=f"{float(user_info['latitude'])},{float(user_info['longitude'])}",
             aqi="no",
             lang="ru",
         )
     else:
         weather_info = await get_weather(
             True,
-            q=f'{float(user_info["latitude"])},{float(user_info["longitude"])}',
+            q=f"{float(user_info['latitude'])},{float(user_info['longitude'])}",
             aqi="no",
             lang="en",
         )
@@ -117,14 +117,14 @@ async def create_forecast_today(
 
     if user_info["wind_unit"] == "kmph":
         if lang == "RU":
-            wind_speed = f'{weather_info["current"]["wind_kph"]} км/ч'
+            wind_speed = f"{weather_info['current']['wind_kph']} км/ч"
         else:
-            wind_speed = f'{weather_info["current"]["wind_kph"]} km/h'
+            wind_speed = f"{weather_info['current']['wind_kph']} km/h"
     else:
         if lang == "RU":
-            wind_speed = f'{int(weather_info["current"]["wind_kph"]) // 3.6} м/с'
+            wind_speed = f"{int(weather_info['current']['wind_kph']) // 3.6} м/с"
         else:
-            wind_speed = f'{int(weather_info["current"]["wind_kph"]) // 3.6} m/s'
+            wind_speed = f"{int(weather_info['current']['wind_kph']) // 3.6} m/s"
 
     if lang == "RU":
         wind_degree = WIND_DIR_RU[weather_info["current"]["wind_dir"]]
@@ -140,9 +140,9 @@ async def create_forecast_today(
             precip = "not expected"
     else:
         if lang == "RU":
-            precip = f'{weather_info["current"]["precip_mm"]} мм'
+            precip = f"{weather_info['current']['precip_mm']} мм"
         else:
-            precip = f'{weather_info["current"]["precip_mm"]} mm'
+            precip = f"{weather_info['current']['precip_mm']} mm"
 
     humidity = str(weather_info["current"]["humidity"])
     cloud = str(weather_info["current"]["cloud"])
@@ -183,7 +183,7 @@ async def create_forecast_week(
     if lang == "RU":
         weather_info = await get_weather(
             False,
-            q=f'{float(user_info["latitude"])},{float(user_info["longitude"])}',
+            q=f"{float(user_info['latitude'])},{float(user_info['longitude'])}",
             days="3",
             aqi="no",
             alerts="no",
@@ -192,7 +192,7 @@ async def create_forecast_week(
     else:
         weather_info = await get_weather(
             False,
-            q=f'{float(user_info["latitude"])},{float(user_info["longitude"])}',
+            q=f"{float(user_info['latitude'])},{float(user_info['longitude'])}",
             days="3",
             aqi="no",
             alerts="no",
@@ -216,14 +216,14 @@ async def create_forecast_week(
 
         if user_info["wind_unit"] == "kmph":
             if lang == "RU":
-                maxwind = f'{day["day"]["maxwind_kph"]} км/ч'
+                maxwind = f"{day['day']['maxwind_kph']} км/ч"
             else:
-                maxwind = f'{day["day"]["maxwind_kph"]} km/h'
+                maxwind = f"{day['day']['maxwind_kph']} km/h"
         else:
             if lang == "RU":
-                maxwind = f'{int(day["day"]["maxwind_kph"]) // 3.6} м/с'
+                maxwind = f"{int(day['day']['maxwind_kph']) // 3.6} м/с"
             else:
-                maxwind = f'{int(day["day"]["maxwind_kph"]) // 3.6} m/s'
+                maxwind = f"{int(day['day']['maxwind_kph']) // 3.6} m/s"
 
         if int(day["day"]["totalprecip_mm"]) == 0:
             if lang == "RU":
@@ -232,9 +232,9 @@ async def create_forecast_week(
                 totalprecip = "not expected"
         else:
             if lang == "RU":
-                totalprecip = f'{day["day"]["totalprecip_mm"]} мм'
+                totalprecip = f"{day['day']['totalprecip_mm']} мм"
             else:
-                totalprecip = f'{day["day"]["totalprecip_mm"]} mm'
+                totalprecip = f"{day['day']['totalprecip_mm']} mm"
 
         avghumidity = str(day["day"]["avghumidity"])
 
@@ -268,17 +268,17 @@ async def create_profile(
     user_info = await get_data(user_id=user_id, sessionmaker=sessionmaker)
 
     if lang == "RU":
-        return f'Язык: {user_info["language"]}\
-                \nШирота: {float(user_info["latitude"])}\
-                \nДолгота: {float(user_info["longitude"])}\
-                \nЕдиницы измерения температуры: {lex.KB_LEXICON_RU[user_info["temp_unit"]]}\
-                \nЕдиницы измерения скорости ветра: {lex.KB_LEXICON_RU[user_info["wind_unit"]]}'
+        return f"Язык: {user_info['language']}\
+                \nШирота: {float(user_info['latitude'])}\
+                \nДолгота: {float(user_info['longitude'])}\
+                \nЕдиницы измерения температуры: {lex.KB_LEXICON_RU[user_info['temp_unit']]}\
+                \nЕдиницы измерения скорости ветра: {lex.KB_LEXICON_RU[user_info['wind_unit']]}"
     else:
-        return f'Language: {user_info["language"]}\
-                \nLatitude: {float(user_info["latitude"])}\
-                \nLongitude: {float(user_info["longitude"])}\
-                \nTemperature measurement units: {lex.KB_LEXICON_EN[user_info["temp_unit"]]}\
-                \nUnits of wind speed measurement: {lex.KB_LEXICON_EN[user_info["wind_unit"]]}'
+        return f"Language: {user_info['language']}\
+                \nLatitude: {float(user_info['latitude'])}\
+                \nLongitude: {float(user_info['longitude'])}\
+                \nTemperature measurement units: {lex.KB_LEXICON_EN[user_info['temp_unit']]}\
+                \nUnits of wind speed measurement: {lex.KB_LEXICON_EN[user_info['wind_unit']]}"
 
 
 async def create_plot(
@@ -296,7 +296,7 @@ async def create_plot(
     if lang == "RU":
         weather_info = await get_weather(
             False,
-            q=f'{float(user_info["latitude"])},{float(user_info["longitude"])}',
+            q=f"{float(user_info['latitude'])},{float(user_info['longitude'])}",
             days="3",
             aqi="no",
             alerts="no",
@@ -305,7 +305,7 @@ async def create_plot(
     else:
         weather_info = await get_weather(
             False,
-            q=f'{float(user_info["latitude"])},{float(user_info["longitude"])}',
+            q=f"{float(user_info['latitude'])},{float(user_info['longitude'])}",
             days="3",
             aqi="no",
             alerts="no",
@@ -330,10 +330,10 @@ async def create_plot(
                     y.append(int(day["day"]["avgtemp_f"]))
 
             if lang == "RU":
-                plt.ylabel(f'Температура, {lex.KB_LEXICON_RU[user_info["temp_unit"]]}')
+                plt.ylabel(f"Температура, {lex.KB_LEXICON_RU[user_info['temp_unit']]}")
                 plt.title("График температуры")
             else:
-                plt.ylabel(f'Temperature, {lex.KB_LEXICON_EN[user_info["temp_unit"]]}')
+                plt.ylabel(f"Temperature, {lex.KB_LEXICON_EN[user_info['temp_unit']]}")
                 plt.title("Temperature plot")
 
         # wind speed plot
@@ -346,11 +346,11 @@ async def create_plot(
 
             if lang == "RU":
                 plt.ylabel(
-                    f'Скорость ветра, {lex.KB_LEXICON_RU[user_info["wind_unit"]]}'
+                    f"Скорость ветра, {lex.KB_LEXICON_RU[user_info['wind_unit']]}"
                 )
                 plt.title("График скорости ветра")
             else:
-                plt.ylabel(f'Wind speed, {lex.KB_LEXICON_EN[user_info["wind_unit"]]}')
+                plt.ylabel(f"Wind speed, {lex.KB_LEXICON_EN[user_info['wind_unit']]}")
                 plt.title("Wind speed plot")
 
         # precipation plot
